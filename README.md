@@ -36,61 +36,18 @@ Create the Calculator.java class:
 
 File: src/main/java/com/example/Calculator.java
 
-```
-package com.example;
-
-public class Calculator {
-    public int add(int a, int b) {
-        return a + b;
-    }
-}
-```
-
 ### Writing the Test Code
 
 Create the CalculatorTest.java class:
 
 File: src/test/java/com/example/CalculatorTest.java
 
-```
-package com.example;
-
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-
-public class CalculatorTest {
-
-    @Test
-    public void testAdd() {
-        Calculator calc = new Calculator();
-        assertEquals(5, calc.add(2, 3));
-    }
-}
-```
 
 ### Updating the pom.xml File
 Ensure that JUnit is included as a dependency.
 
 File: pom.xml
 
-```
-<project xmlns="http://maven.apache.org/POM/4.0.0" ...>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-    <artifactId>my-java-app</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
-    <dependencies>
-        <!-- JUnit dependency for testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-</project>
-```
 
 ## Building and Testing the Application
 
@@ -113,59 +70,6 @@ Package the Application (Optional):
 Create a Jenkinsfile in the project's root directory to define the pipeline. 
 
 File: Jenkinsfile
-```
-pipeline {
-    agent any
-
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/your-username/my-java-app.git'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'mvn clean compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying the application...'
-                // Add deployment commands here
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully.'
-        }
-        failure {
-            echo 'Pipeline failed.'
-        }
-    }
-}
-```
-
 
 ### Configuring Jenkins
 
@@ -194,72 +98,17 @@ pipeline {
 - Package: Packages the application.
 - Deploy: Placeholder for deployment steps.
 
-## Additional Enhancements
+## Additional Enhancements
 
 ### Integrating Code Analysis
 
-- Update pom.xml:
+- Update pom.xml: Add SpotBugs plugin for static code analysis.
 
-Add SpotBugs plugin for static code analysis.
+- Update Jenkinsfile: Add a Code Analysis stage.
 
-```
-<build>
-    <plugins>
-        <!-- SpotBugs Plugin -->
-        <plugin>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-maven-plugin</artifactId>
-            <version>4.7.3.0</version>
-            <executions>
-                <execution>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>spotbugs</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
-```
-
-- Update Jenkinsfile:
-
-Add a Code Analysis stage.
-
-```
-stage('Code Analysis') {
-    steps {
-        sh 'mvn spotbugs:spotbugs'
-    }
-    post {
-        always {
-            archiveArtifacts artifacts: 'target/spotbugsXml.xml', fingerprint: true
-        }
-    }
-}
-
-```
 ### Adding Notifications
 
-- Update Jenkinsfile:
-
-```
-post {
-    success {
-        echo 'Pipeline completed successfully.'
-        mail to: 'team@example.com',
-             subject: "SUCCESS: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-             body: "Good news! The build succeeded."
-    }
-    failure {
-        echo 'Pipeline failed.'
-        mail to: 'team@example.com',
-             subject: "FAILURE: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-             body: "Unfortunately, the build failed. Please check the Jenkins console output."
-    }
-}
-```
+- Update Jenkinsfile
 
 
 ## Additional Resources
