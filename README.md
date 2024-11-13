@@ -194,3 +194,10 @@ pipeline {
 - Package: Packages the application.
 - Deploy: Placeholder for deployment steps.
 
+
+## Additional Resources
+
+Jenkins Documentation: https://www.jenkins.io/doc/
+Maven Surefire Plugin: https://maven.apache.org/surefire/maven-surefire-plugin/
+JUnit 4 Documentation: https://junit.org/junit4/
+SpotBugs Maven Plugin: https://spotbugs.github.io/spotbugs-maven-plugin/
