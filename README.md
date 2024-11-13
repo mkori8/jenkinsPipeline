@@ -194,10 +194,77 @@ pipeline {
 - Package: Packages the application.
 - Deploy: Placeholder for deployment steps.
 
+## Additional Enhancements
 
-## Additional Resources
+### Integrating Code Analysis
 
-Jenkins Documentation: https://www.jenkins.io/doc/
-Maven Surefire Plugin: https://maven.apache.org/surefire/maven-surefire-plugin/
-JUnit 4 Documentation: https://junit.org/junit4/
-SpotBugs Maven Plugin: https://spotbugs.github.io/spotbugs-maven-plugin/
+- Update pom.xml:
+
+Add SpotBugs plugin for static code analysis.
+
+```
+<build>
+    <plugins>
+        <!-- SpotBugs Plugin -->
+        <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.7.3.0</version>
+            <executions>
+                <execution>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>spotbugs</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+- Update Jenkinsfile:
+
+Add a Code Analysis stage.
+
+```
+stage('Code Analysis') {
+    steps {
+        sh 'mvn spotbugs:spotbugs'
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'target/spotbugsXml.xml', fingerprint: true
+        }
+    }
+}
+
+```
+### Adding Notifications
+
+- Update Jenkinsfile:
+
+```
+post {
+    success {
+        echo 'Pipeline completed successfully.'
+        mail to: 'team@example.com',
+             subject: "SUCCESS: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+             body: "Good news! The build succeeded."
+    }
+    failure {
+        echo 'Pipeline failed.'
+        mail to: 'team@example.com',
+             subject: "FAILURE: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+             body: "Unfortunately, the build failed. Please check the Jenkins console output."
+    }
+}
+```
+
+
+## Additional Resources
+
+- Jenkins Documentation: https://www.jenkins.io/doc/
+- Maven Surefire Plugin: https://maven.apache.org/surefire/maven-surefire-plugin/
+- JUnit 4 Documentation: https://junit.org/junit4/
+- SpotBugs Maven Plugin: https://spotbugs.github.io/spotbugs-maven-plugin/
