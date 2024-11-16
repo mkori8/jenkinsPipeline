@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/mkori8/my-java-app.git'
+                git 'git@github.com:mkori8/jenkinsPipeline.git'
             }
         }
 
